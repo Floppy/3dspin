@@ -9,6 +9,7 @@ import buttons
 import pyb
 import math
 import ure
+import uos
 
 app_path = "apps/3dspin/"
 matrix = __import__(app_path + "matrix")
@@ -35,12 +36,12 @@ proj.m[2][2] = -zfar/(zfar-znear)
 proj.m[3][2] = -1.0
 proj.m[2][3] = -(zfar*znear)/(zfar-znear)
 
-def loadObject(name):
+def loadObject(filename):
     global vertices
     global faces
     vertices = []
     faces = []
-    path = app_path + "models/"+name+".obj"
+    path = app_path + "models/"+filename
     f = open(path)
     for line in f:
         if line[:2] == "v ":
@@ -109,18 +110,30 @@ def render(x_rotation, y_rotation, z_rotation):
     	# Render polygon
      	ugfx.polygon(0,0, poly, ugfx.WHITE) 
 		
-loadObject("dodecahedron")
+objects = uos.listdir(app_path+"models")
+selected = 0
+loadObject(objects[selected])
 x_rotation = 0
 y_rotation = 0
 z_rotation = 0
 while not buttons.is_pressed("BTN_MENU"):
-	render(x_rotation, y_rotation, z_rotation)
-	x_rotation += 1
-	if x_rotation >= 360:
-		x_rotation = 0
-	y_rotation += 2
-	if y_rotation >= 360:
-		y_rotation = 0
-	z_rotation += 3
-	if z_rotation >= 360:
-		z_rotation = 0
+    render(x_rotation, y_rotation, z_rotation)
+    x_rotation += 1
+    if x_rotation >= 360:
+        x_rotation = 0
+    y_rotation += 2
+    if y_rotation >= 360:
+        y_rotation = 0
+    z_rotation += 3
+    if z_rotation >= 360:
+        z_rotation = 0
+    if buttons.is_pressed("BTN_B"):
+        selected += 1
+        if selected >= len(objects):
+            selected = 0
+        loadObject(objects[selected])
+    if buttons.is_pressed("BTN_A"):
+        selected -= 1
+        if selected < 0:
+            selected =  len(objects) - 1
+        loadObject(objects[selected])
