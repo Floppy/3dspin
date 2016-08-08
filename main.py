@@ -32,7 +32,6 @@ cube = [
 cubefaces = [(0,1,2,3),(1,5,6,2),(5,4,7,6),(4,0,3,7),(0,4,5,1),(3,2,6,7)] 
 
 proj = matrix.Matrix(4, 4)	
-rot = matrix.Matrix(4,4)
 
 fov = 110.0
 zfar = 100.0
@@ -64,38 +63,61 @@ def toScreenCoords(pv):
 	py = ((1-(pv.y+1)*0.5)*viewport_y)
 	return matrix.Vector3D(int(px), int(py), 1)
 
-def render(y_rotation):
-		
-	rot.m[0][0] = math.cos(math.radians(y_rotation))
-	rot.m[0][2] = math.sin(math.radians(y_rotation))
-	rot.m[2][0] = -math.sin(math.radians(y_rotation))
-	rot.m[2][2] = math.cos(math.radians(y_rotation))
+def render(x_rotation, y_rotation, z_rotation):
 
-	polys = []
-	for i in range(len(cubefaces)):
-		poly = [] #transformed polygon
-		for j in range(len(cubefaces[0])):
-			v = cube[cubefaces[i][j]]
-			# Rotate 
-			r = rot*v
-			# Transform the point from 3D to 2D
-			ps = proj*r
-			# Put the screenpoint in the list of transformed vertices
-			p = toScreenCoords(ps)
-			x = int(p.x)
-			y = int(p.y)
-			poly.append([x, y])
-		polys.append(poly)
-	
-	# Render
-	ugfx.clear(ugfx.BLACK)
-	for poly in polys:	
-		# Render polygon
-	 	ugfx.polygon(0,0, poly, ugfx.WHITE) 
+    rot_x = matrix.Matrix(4,4)
+    rot_x.m[1][1] = math.cos(math.radians(x_rotation))
+    rot_x.m[1][2] = -math.sin(math.radians(x_rotation))
+    rot_x.m[2][1] = math.sin(math.radians(x_rotation))
+    rot_x.m[2][2] = math.cos(math.radians(x_rotation))
+
+    rot_y = matrix.Matrix(4,4)
+    rot_y.m[0][0] = math.cos(math.radians(y_rotation))
+    rot_y.m[0][2] = math.sin(math.radians(y_rotation))
+    rot_y.m[2][0] = -math.sin(math.radians(y_rotation))
+    rot_y.m[2][2] = math.cos(math.radians(y_rotation))
+
+    rot_z = matrix.Matrix(4,4)
+    rot_z.m[0][0] = math.cos(math.radians(z_rotation))
+    rot_z.m[0][1] = -math.sin(math.radians(z_rotation))
+    rot_z.m[1][0] = math.sin(math.radians(z_rotation))
+    rot_z.m[1][1] = math.cos(math.radians(z_rotation))
+
+    rot = rot_x * rot_y * rot_z
+
+    polys = []
+    for i in range(len(cubefaces)):
+    	poly = [] #transformed polygon
+    	for j in range(len(cubefaces[0])):
+    		v = cube[cubefaces[i][j]]
+    		# Rotate 
+    		r = rot*v
+    		# Transform the point from 3D to 2D
+    		ps = proj*r
+    		# Put the screenpoint in the list of transformed vertices
+    		p = toScreenCoords(ps)
+    		x = int(p.x)
+    		y = int(p.y)
+    		poly.append([x, y])
+    	polys.append(poly)
+
+    # Render
+    ugfx.clear(ugfx.BLACK)
+    for poly in polys:	
+    	# Render polygon
+     	ugfx.polygon(0,0, poly, ugfx.WHITE) 
 		
+x_rotation = 0
 y_rotation = 0
+z_rotation = 0
 while not buttons.is_pressed("BTN_MENU"):
-	render(y_rotation)
-	y_rotation += 1
+	render(x_rotation, y_rotation, z_rotation)
+	x_rotation += 1
+	if x_rotation >= 360:
+		x_rotation = 0
+	y_rotation += 2
 	if y_rotation >= 360:
 		y_rotation = 0
+	z_rotation += 3
+	if z_rotation >= 360:
+		z_rotation = 0
