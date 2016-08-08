@@ -19,3 +19,11 @@ Hit A and B to cycle between objects.
 ## Adding more models
 
 The app loads OBJ files from the `models` directory, so they are easy to add, but it can't handle very big ones. Don't expect to be able to drop in a teapot without memory exceptions ruining your day; even a crappy sphere was too much for it in my testing.
+
+## License & Credits
+
+The code I've written in `main.py` is open source under the MIT license, as are the `OBJ` files.
+
+The code in `matrix.py` is shamelessly stolen from https://sites.google.com/site/3dprogramminginpython/ and then badly converted to Python 3 by me. Thanks to the author.
+
+`test/pyboard.py` is taken from micropython and included here just for convenience.
