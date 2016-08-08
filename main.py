@@ -26,7 +26,12 @@ viewport_y = 240
 
 proj = matrix.Matrix(4, 4)	
 
-fov = 130.0
+camera_transform = matrix.Matrix(4, 4)
+camera_transform.m[0][3] = 0
+camera_transform.m[1][3] = 0
+camera_transform.m[2][3] = -5
+
+fov = 45.0
 zfar = 100.0
 znear = 0.1
 s = 1/(math.tan(math.radians(fov/2)))
@@ -92,16 +97,18 @@ def render(x_rotation, y_rotation, z_rotation):
     for i in range(len(faces)):
     	poly = [] #transformed polygon
     	for j in range(len(faces[0])):
-    		v = vertices[faces[i][j]]
-    		# Rotate 
-    		r = rot*v
-    		# Transform the point from 3D to 2D
-    		ps = proj*r
-    		# Put the screenpoint in the list of transformed vertices
-    		p = toScreenCoords(ps)
-    		x = int(p.x)
-    		y = int(p.y)
-    		poly.append([x, y])
+            v = vertices[faces[i][j]]
+            # Rotate 
+            m = rot*v
+            # Camera Translation
+            m = camera_transform * m
+            # Transform the point from 3D to 2D
+            ps = proj*m
+            # Put the screenpoint in the list of transformed vertices
+            p = toScreenCoords(ps)
+            x = int(p.x)
+            y = int(p.y)
+            poly.append([x, y])
     	polys.append(poly)
 
     # Render
