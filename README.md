@@ -2,7 +2,7 @@
 
 3D spinning objects on the EMFcamp badge (TiLDA Mkπ)
 
-<iframe src="https://vine.co/v/5bzMrK7YU7d/embed/simple" width="600" height="600" frameborder="0"></iframe><script src="https://platform.vine.co/static/scripts/embed.js"></script>
+Demo video: https://vine.co/v/5bzMrK7YU7d
 
 ## Installing
 
