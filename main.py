@@ -10,6 +10,7 @@ import pyb
 import math
 import ure
 import uos
+import utime
 
 app_path = "apps/3dspin/"
 matrix = __import__(app_path + "matrix")
@@ -139,8 +140,10 @@ while not buttons.is_pressed("BTN_MENU"):
         if selected >= len(objects):
             selected = 0
         loadObject(objects[selected])
+        utime.sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
     if buttons.is_pressed("BTN_A"):
         selected -= 1
         if selected < 0:
             selected =  len(objects) - 1
         loadObject(objects[selected])
+        utime.sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
