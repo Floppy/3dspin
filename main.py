@@ -2,7 +2,7 @@
 ### Description: 3d rotating polyhedra
 ### Category: Graphics
 ### License: MIT
-### Appname : 3D Spin
+### Appname : 3DSpin
 
 import ugfx
 import buttons
