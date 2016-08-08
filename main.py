@@ -7,8 +7,10 @@
 import ugfx
 import buttons
 import pyb
-import matrix
+import math
 
+matrix = __import__("apps/3dspin/matrix")
+            
 ugfx.init()
 buttons.init()
 ugfx.clear(ugfx.BLACK)
@@ -18,19 +20,19 @@ viewport_y = 240
 aspect = viewport_x / viewport_y
 
 cube = [
-	Vector3D(-0.5,0.5,-0.5),
-	Vector3D(0.5,0.5,-0.5),
-	Vector3D(0.5,-0.5,-0.5),
-	Vector3D(-0.5,-0.5,-0.5),
-	Vector3D(-0.5,0.5,0.5),
-	Vector3D(0.5,0.5,0.5),
-	Vector3D(0.5,-0.5,0.5),
-	Vector3D(-0.5,-0.5,0.5)
+	matrix.Vector3D(-0.5,0.5,-0.5),
+	matrix.Vector3D(0.5,0.5,-0.5),
+	matrix.Vector3D(0.5,-0.5,-0.5),
+	matrix.Vector3D(-0.5,-0.5,-0.5),
+	matrix.Vector3D(-0.5,0.5,0.5),
+	matrix.Vector3D(0.5,0.5,0.5),
+	matrix.Vector3D(0.5,-0.5,0.5),
+	matrix.Vector3D(-0.5,-0.5,0.5)
 ]
 cubefaces = [(0,1,2,3),(1,5,6,2),(5,4,7,6),(4,0,3,7),(0,4,5,1),(3,2,6,7)] 
 
-proj = Matrix(4, 4)	
-rot = Matrix(4,4)
+proj = matrix.Matrix(4, 4)	
+rot = matrix.Matrix(4,4)
 
 fov = 110.0
 zfar = 100.0
@@ -60,7 +62,7 @@ proj.m[2][3] = -(zfar*znear)/(zfar-znear)
 def toScreenCoords(pv):
 	px = ((pv.x+1)*0.5*viewport_x)
 	py = ((1-(pv.y+1)*0.5)*viewport_y)
-	return Vector3D(int(px), int(py), 1)
+	return matrix.Vector3D(int(px), int(py), 1)
 
 def render(y_rotation):
 		
