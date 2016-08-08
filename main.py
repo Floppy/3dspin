@@ -6,10 +6,9 @@
 
 import ugfx
 import buttons
-import pyb
 import math
-import uos
-import utime
+from uos import listdir
+from utime import sleep_ms
 from imu import IMU
 
 app_path = "apps/floppy~3dspin"
@@ -124,7 +123,7 @@ def render(x_rotation, y_rotation, z_rotation):
         # Render polygon        
         ugfx.polygon(0,0, poly[0], ugfx.WHITE) 
 		
-objects = [x for x in uos.listdir(app_path) if ((".obj" in x)&(x[0] != "."))]
+objects = [x for x in listdir(app_path) if ((".obj" in x)&(x[0] != "."))]
 selected = 0
 loadObject(objects[selected])
 x_rotation = 0
@@ -147,10 +146,10 @@ while not buttons.is_pressed("BTN_MENU"):
         if selected >= len(objects):
             selected = 0
         loadObject(objects[selected])
-        utime.sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
+        sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
     if buttons.is_pressed("BTN_A"):
         selected -= 1
         if selected < 0:
             selected =  len(objects) - 1
         loadObject(objects[selected])
-        utime.sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
+        sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
