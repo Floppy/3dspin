@@ -15,21 +15,12 @@ ugfx.init()
 buttons.init()
 ugfx.clear(ugfx.BLACK)
 
+vertices = []
+faces = []
+
 viewport_x = 320
 viewport_y = 240
 aspect = viewport_x / viewport_y
-
-cube = [
-	matrix.Vector3D(-0.5,0.5,-0.5),
-	matrix.Vector3D(0.5,0.5,-0.5),
-	matrix.Vector3D(0.5,-0.5,-0.5),
-	matrix.Vector3D(-0.5,-0.5,-0.5),
-	matrix.Vector3D(-0.5,0.5,0.5),
-	matrix.Vector3D(0.5,0.5,0.5),
-	matrix.Vector3D(0.5,-0.5,0.5),
-	matrix.Vector3D(-0.5,-0.5,0.5)
-]
-cubefaces = [(0,1,2,3),(1,5,6,2),(5,4,7,6),(4,0,3,7),(0,4,5,1),(3,2,6,7)] 
 
 proj = matrix.Matrix(4, 4)	
 
@@ -42,6 +33,22 @@ proj.m[1][1] = s
 proj.m[2][2] = -zfar/(zfar-znear)
 proj.m[3][2] = -1.0
 proj.m[2][3] = -(zfar*znear)/(zfar-znear)
+
+def loadObject():
+    global vertices
+    global faces
+    vertices = [
+    	matrix.Vector3D(-0.5,0.5,-0.5),
+    	matrix.Vector3D(0.5,0.5,-0.5),
+    	matrix.Vector3D(0.5,-0.5,-0.5),
+    	matrix.Vector3D(-0.5,-0.5,-0.5),
+    	matrix.Vector3D(-0.5,0.5,0.5),
+    	matrix.Vector3D(0.5,0.5,0.5),
+    	matrix.Vector3D(0.5,-0.5,0.5),
+    	matrix.Vector3D(-0.5,-0.5,0.5)
+    ]
+    faces = [(0,1,2,3),(1,5,6,2),(5,4,7,6),(4,0,3,7),(0,4,5,1),(3,2,6,7)] 
+
 
 def toScreenCoords(pv):
 	px = ((pv.x+1)*0.5*viewport_x)
@@ -71,10 +78,10 @@ def render(x_rotation, y_rotation, z_rotation):
     rot = rot_x * rot_y * rot_z
 
     polys = []
-    for i in range(len(cubefaces)):
+    for i in range(len(faces)):
     	poly = [] #transformed polygon
-    	for j in range(len(cubefaces[0])):
-    		v = cube[cubefaces[i][j]]
+    	for j in range(len(faces[0])):
+    		v = vertices[faces[i][j]]
     		# Rotate 
     		r = rot*v
     		# Transform the point from 3D to 2D
@@ -92,6 +99,7 @@ def render(x_rotation, y_rotation, z_rotation):
     	# Render polygon
      	ugfx.polygon(0,0, poly, ugfx.WHITE) 
 		
+loadObject()
 x_rotation = 0
 y_rotation = 0
 z_rotation = 0
