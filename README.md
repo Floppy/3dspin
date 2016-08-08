@@ -18,7 +18,7 @@ Hit A and B to cycle between objects. Rotate the badge to rotate the object (sta
 
 ## Adding more models
 
-The app loads OBJ files from the `models` directory, so they are easy to add, but it can't handle very big ones. Don't expect to be able to drop in a teapot without memory exceptions ruining your day; even a crappy sphere was too much for it in my testing.
+The app loads any OBJ files in the app directory, so they are easy to add, but it can't handle very big ones. Don't expect to be able to drop in a teapot without memory exceptions ruining your day; even a crappy sphere was too much for it in my testing.
 
 ## License & Credits
 

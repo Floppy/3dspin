@@ -13,8 +13,8 @@ import uos
 import utime
 from imu import IMU
 
-app_path = "apps/floppy~3dspin/"
-matrix = __import__(app_path + "matrix")
+app_path = "apps/floppy~3dspin"
+matrix = __import__(app_path + "/matrix")
             
 ugfx.init()
 imu=IMU()
@@ -45,7 +45,7 @@ def loadObject(filename):
     global faces
     vertices = []
     faces = []
-    path = app_path + "models/"+filename
+    path = app_path + "/" + filename
     f = open(path)
     for line in f:
         if line[:2] == "v ":
@@ -125,7 +125,7 @@ def render(x_rotation, y_rotation, z_rotation):
         # Render polygon        
         ugfx.polygon(0,0, poly[0], ugfx.WHITE) 
 		
-objects = [x for x in uos.listdir(app_path+"models") if x[0] != '.']
+objects = [x for x in uos.listdir(app_path) if ((".obj" in x)&(x[0] != "."))]
 selected = 0
 loadObject(objects[selected])
 x_rotation = 0
