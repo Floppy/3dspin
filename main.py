@@ -93,21 +93,29 @@ def render(x_rotation, y_rotation, z_rotation):
 
     polys = []
     for i in range(len(faces)):
-    	poly = [] #transformed polygon
+        # Transform face
+    	poly = []
     	for j in range(len(faces[0])):
             v = vertices[faces[i][j]]
             # Rotate 
-            m = rot*v
+            p = rot*v
             # Camera Translation
-            m = camera_transform * m
-            # Transform the point from 3D to 2D
-            ps = proj*m
+            p = camera_transform * p
+            # Project
+            p = proj*p
+            # Store
+            poly.append(p)
+        # Convert to screen coordinates
+        screen_poly = []
+        for p in poly:
             # Put the screenpoint in the list of transformed vertices
-            p = toScreenCoords(ps)
-            x = int(p.x)
-            y = int(p.y)
-            poly.append([x, y])
-    	polys.append(poly)
+            sp = toScreenCoords(p)
+            screen_poly.append([int(sp.x), int(sp.y)])
+        # Work out the face normal for backface culling
+        normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
+        # Only render things facing towards us
+    	if normal.z > 0:
+            polys.append(screen_poly)
 
     # Render
     ugfx.clear(ugfx.BLACK)
