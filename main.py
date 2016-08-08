@@ -8,6 +8,7 @@ import ugfx
 import buttons
 import pyb
 import math
+import ure
 
 app_path = "apps/3dspin/"
 matrix = __import__(app_path + "matrix")
@@ -34,21 +35,30 @@ proj.m[2][2] = -zfar/(zfar-znear)
 proj.m[3][2] = -1.0
 proj.m[2][3] = -(zfar*znear)/(zfar-znear)
 
-def loadObject():
+def loadObject(name):
     global vertices
     global faces
-    vertices = [
-    	matrix.Vector3D(-0.5,0.5,-0.5),
-    	matrix.Vector3D(0.5,0.5,-0.5),
-    	matrix.Vector3D(0.5,-0.5,-0.5),
-    	matrix.Vector3D(-0.5,-0.5,-0.5),
-    	matrix.Vector3D(-0.5,0.5,0.5),
-    	matrix.Vector3D(0.5,0.5,0.5),
-    	matrix.Vector3D(0.5,-0.5,0.5),
-    	matrix.Vector3D(-0.5,-0.5,0.5)
-    ]
-    faces = [(0,1,2,3),(1,5,6,2),(5,4,7,6),(4,0,3,7),(0,4,5,1),(3,2,6,7)] 
-
+    vertices = []
+    faces = []
+    path = app_path + "models/"+name+".obj"
+    f = open(path)
+    for line in f:
+        if line[:2] == "v ":
+            parts = line.split(" ")
+            vertices.append(
+                matrix.Vector3D(
+                    float(parts[1]),
+                    float(parts[2]),
+                    float(parts[3])
+                )
+            )
+        elif line[:2] == "f ":
+            parts = line.split(" ")
+            face = []
+            for part in parts[1:]:
+                face.append(int(part.split("/",1)[0])-1)
+            faces.append(face)
+    f.close()
 
 def toScreenCoords(pv):
 	px = ((pv.x+1)*0.5*viewport_x)
@@ -99,7 +109,7 @@ def render(x_rotation, y_rotation, z_rotation):
     	# Render polygon
      	ugfx.polygon(0,0, poly, ugfx.WHITE) 
 		
-loadObject()
+loadObject("dodecahedron")
 x_rotation = 0
 y_rotation = 0
 z_rotation = 0
