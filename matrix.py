@@ -84,7 +84,7 @@ class Matrix:
 			raise Exception('*** Matrix: error, getitem((row, col)), row, col problem! ***')
 		self.rows = rows
 		self.cols = cols
-		self.m = [[0.0]*rows for x in xrange(cols)]
+		self.m = [[0.0]*rows for x in range(cols)]
 
 		#If quadratic matrix then create identity one
 		if self.isQuadratic() and createidentity:
@@ -108,7 +108,7 @@ class Matrix:
 				r.m[i][j] = self.m[i][j]
 		return r
 
-	def __getitem__(self, (row, col)):
+	def __getitem__(self, row, col):
 		''' The value at (row, col) 
 		For example, to get the element at 1,3 say
 				m[(1,2)]'''
@@ -117,7 +117,7 @@ class Matrix:
 		else:
 			raise Exception('*** Matrix: error, getitem((row, col)), row, col problem! ***')
 
-	def __setitem__(self, (row, col), val):
+	def __setitem__(self, row, col, val):
 		''' Sets the value at (row, col) 
 		For example, to set the value of element at 1,3 say
 				m[(1,2)] = 3 '''
@@ -248,7 +248,7 @@ class Matrix:
 	def expandByMinorsOnRow(self, row):#used by det()
 		assert(row < self.rows)
 		d = 0
-		for col in xrange(self.cols):
+		for col in range(self.cols):
 			d += (-1)**(row+col)*self.m[row][col]*self.minor(row, col).det()
 
 		return d
@@ -256,7 +256,7 @@ class Matrix:
 	def expandByMinorsOnCol(self, col):#used by det()
 		assert(col < self.cols)
 		d = 0
-		for row in xrange(self.rows):
+		for row in range(self.rows):
 			d += (-1)**(row+col)*self.m[row][col]*self.minor(row, col).det()
 
 		return d
@@ -273,9 +273,9 @@ class Matrix:
 		#Loop through the matrix, skipping over the row and column specified
 		#by i and j
 		minor_row = minor_col = 0
-		for self_row in xrange(self.rows):
+		for self_row in range(self.rows):
 			if not self_row == i: #skip row i
-				for self_col in xrange(self.cols):
+				for self_col in range(self.cols):
 					if not self_col == j: #Skip column j
 						mat.m[minor_row][minor_col] = self.m[self_row][self_col]
 						minor_col += 1
@@ -326,34 +326,4 @@ class Matrix:
 					mat.m[row][column] /= mo.m[row][row]
 
 			return mat
-
-
-if __name__ == "__main__":
-	m1 = Matrix(3, 3)
-	m1[(0,0)] = 1
-	m1[(0,1)] = 6
-	m1[(0,2)] = 8
-	m1[(1,0)] = 2
-	m1[(1,1)] = 5
-	m1[(1,2)] = 7
-	m1[(2,0)] = 3
-	m1[(2,1)] = 4
-	m1[(2,2)] = 9
-	m2 = Matrix(3, 3)
-	m2[(0,0)] = 5
-	m2[(0,1)] = 8
-	m2[(0,2)] = 1
-	m2[(1,0)] = 6
-	m2[(1,1)] = 1
-	m2[(1,2)] = 4
-	m2[(2,0)] = 3
-	m2[(2,1)] = 2
-	m2[(2,2)] = 7
-
-	m = m1*m2
-	print str(m)
-
-
-
-
-
+            
