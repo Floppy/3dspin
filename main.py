@@ -117,14 +117,14 @@ def render(x_rotation, y_rotation, z_rotation):
         normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
         # Only render things facing towards us
     	if normal.z > 0:
-            polys.append(screen_poly)
+            polys.append([screen_poly, normal])
 
     # Render
     ugfx.clear(ugfx.BLACK)
     ugfx.text(0,0, objects[selected], ugfx.GREEN)
     for poly in polys:	
-    	# Render polygon
-     	ugfx.polygon(0,0, poly, ugfx.WHITE) 
+        # Render polygon        
+        ugfx.polygon(0,0, poly[0], ugfx.WHITE) 
 		
 objects = [x for x in uos.listdir(app_path+"models") if x[0] != '.']
 selected = 0
