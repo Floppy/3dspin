@@ -69,7 +69,7 @@ def render(y_rotation):
 	rot.m[2][0] = -math.sin(math.radians(y_rotation))
 	rot.m[2][2] = math.cos(math.radians(y_rotation))
 
-	ugfx.clear(ugfx.BLACK)
+	polys = []
 	for i in range(len(cubefaces)):
 		poly = [] #transformed polygon
 		for j in range(len(cubefaces[0])):
@@ -83,7 +83,11 @@ def render(y_rotation):
 			x = int(p.x)
 			y = int(p.y)
 			poly.append([x, y])
-			
+		polys.append(poly)
+	
+	# Render
+	ugfx.clear(ugfx.BLACK)
+	for poly in polys:	
 		# Render polygon
 	 	ugfx.polygon(0,0, poly, ugfx.WHITE) 
 		
