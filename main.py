@@ -11,11 +11,13 @@ import math
 import ure
 import uos
 import utime
+from imu import IMU
 
 app_path = "apps/3dspin/"
 matrix = __import__(app_path + "matrix")
             
 ugfx.init()
+imu=IMU()
 buttons.init()
 ugfx.clear(ugfx.BLACK)
 
@@ -132,13 +134,14 @@ y_rotation = 0
 z_rotation = 0
 while not buttons.is_pressed("BTN_MENU"):
     render(x_rotation, y_rotation, z_rotation)
-    x_rotation += 1
+    accel = imu.get_acceleration()    
+    x_rotation += accel['z']*10
     if x_rotation >= 360:
         x_rotation = 0
-    y_rotation += 2
+    y_rotation += accel['x']*10
     if y_rotation >= 360:
         y_rotation = 0
-    z_rotation += 3
+    z_rotation -= accel['x']*10
     if z_rotation >= 360:
         z_rotation = 0
     if buttons.is_pressed("BTN_B"):

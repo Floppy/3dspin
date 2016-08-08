@@ -14,7 +14,7 @@ python3 test/pyboard.py main.py --device=/dev/tty.usbmodem1422
 
 ## Usage
 
-Hit A and B to cycle between objects.
+Hit A and B to cycle between objects. Rotate the badge to rotate the object (static is with the badge hanging vertically).
 
 ## Adding more models
 
