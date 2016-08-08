@@ -25,7 +25,7 @@ viewport_y = 240
 
 proj = matrix.Matrix(4, 4)	
 
-fov = 110.0
+fov = 130.0
 zfar = 100.0
 znear = 0.1
 s = 1/(math.tan(math.radians(fov/2)))
