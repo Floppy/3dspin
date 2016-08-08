@@ -19,7 +19,6 @@ matrix = __import__(app_path + "matrix")
 ugfx.init()
 imu=IMU()
 buttons.init()
-ugfx.clear(ugfx.BLACK)
 
 vertices = []
 faces = []
