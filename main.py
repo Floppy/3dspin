@@ -118,7 +118,7 @@ def render(x_rotation, y_rotation, z_rotation):
     	# Render polygon
      	ugfx.polygon(0,0, poly, ugfx.WHITE) 
 		
-objects = uos.listdir(app_path+"models")
+objects = [x for x in uos.listdir(app_path+"models") if x[0] != '.']
 selected = 0
 loadObject(objects[selected])
 x_rotation = 0
