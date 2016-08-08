@@ -9,7 +9,8 @@ import buttons
 import pyb
 import math
 
-matrix = __import__("apps/3dspin/matrix")
+app_path = "apps/3dspin/"
+matrix = __import__(app_path + "matrix")
             
 ugfx.init()
 buttons.init()
