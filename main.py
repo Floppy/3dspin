@@ -22,9 +22,6 @@ ugfx.clear(ugfx.BLACK)
 vertices = []
 faces = []
 
-viewport_x = 320
-viewport_y = 240
-
 proj = matrix.Matrix(4, 4)	
 
 camera_transform = matrix.Matrix(4, 4)
@@ -68,8 +65,8 @@ def loadObject(filename):
     f.close()
 
 def toScreenCoords(pv):
-	px = ((pv.x+1)*0.5*viewport_x)
-	py = ((1-(pv.y+1)*0.5)*viewport_y)
+	px = ((pv.x+1)*0.5*ugfx.width())
+	py = ((1-(pv.y+1)*0.5)*ugfx.height())
 	return matrix.Vector3D(int(px), int(py), 1)
 
 def render(x_rotation, y_rotation, z_rotation):
