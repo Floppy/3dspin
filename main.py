@@ -114,6 +114,7 @@ def render(x_rotation, y_rotation, z_rotation):
 
     # Render
     ugfx.clear(ugfx.BLACK)
+    ugfx.text(0,0, objects[selected], ugfx.GREEN)
     for poly in polys:	
     	# Render polygon
      	ugfx.polygon(0,0, poly, ugfx.WHITE) 
