@@ -8,7 +8,6 @@ import ugfx
 import buttons
 import pyb
 import math
-import ure
 import uos
 import utime
 from imu import IMU
