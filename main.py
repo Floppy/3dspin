@@ -43,21 +43,6 @@ proj.m[2][2] = -zfar/(zfar-znear)
 proj.m[3][2] = -1.0
 proj.m[2][3] = -(zfar*znear)/(zfar-znear)
 
-# def project(vector):    
-#     return [
-#         int(viewport_x/2) + (vector[0]*100),
-#         int(viewport_y/2) + (vector[1]*100)
-#     ]
-# 
-# for edge in cube_edges:
-#     start = project(edge[0])
-#     end = project(edge[1])
-#     ugfx.line(start[0],
-#               start[1],
-#               end[0],
-#               end[1],
-#               ugfx.WHITE)
-#     
 def toScreenCoords(pv):
 	px = ((pv.x+1)*0.5*viewport_x)
 	py = ((1-(pv.y+1)*0.5)*viewport_y)
