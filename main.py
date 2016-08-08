@@ -97,7 +97,7 @@ def render(x_rotation, y_rotation, z_rotation):
     for i in range(len(faces)):
         # Transform face
     	poly = []
-    	for j in range(len(faces[0])):
+    	for j in range(len(faces[i])):
             v = vertices[faces[i][j]]
             # Rotate 
             p = rot*v
