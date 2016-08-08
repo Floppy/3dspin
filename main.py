@@ -21,7 +21,6 @@ faces = []
 
 viewport_x = 320
 viewport_y = 240
-aspect = viewport_x / viewport_y
 
 proj = matrix.Matrix(4, 4)	
 
