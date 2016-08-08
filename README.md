@@ -6,7 +6,7 @@ Demo video: https://vine.co/v/5bzMrK7YU7d
 
 ## Installing
 
-Currently it's not in the badge app library, as I can't get it to work from the menu. If you want to run it on your own thing, you'll need to create an app directory, copy across all the code and models, then launch it with `pyboard` like so:
+Currently it's not in the badge app library, as I can't get it to work from the menu. If you want to run it on your own thing, you'll need to create an app directory called `floppy~3dspin`, copy across all the code and models, then launch it with `pyboard` like so:
 
 ```
 python3 test/pyboard.py main.py --device=/dev/tty.usbmodem1422

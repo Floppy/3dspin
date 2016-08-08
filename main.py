@@ -13,7 +13,7 @@ import uos
 import utime
 from imu import IMU
 
-app_path = "apps/3dspin/"
+app_path = "apps/floppy~3dspin/"
 matrix = __import__(app_path + "matrix")
             
 ugfx.init()
