@@ -21,22 +21,6 @@ buttons.init()
 vertices = []
 faces = []
 
-proj = matrix.Matrix(4, 4)	
-
-camera_transform = matrix.Matrix(4, 4)
-camera_transform.m[0][3] = 0
-camera_transform.m[1][3] = 0
-camera_transform.m[2][3] = -5
-
-fov = 45.0
-zfar = 100.0
-znear = 0.1
-s = 1/(math.tan(math.radians(fov/2)))
-proj.m[0][0] = s
-proj.m[1][1] = s
-proj.m[2][2] = -zfar/(zfar-znear)
-proj.m[3][2] = -1.0
-proj.m[2][3] = -(zfar*znear)/(zfar-znear)
 
 def loadObject(filename):
     global vertices
@@ -68,6 +52,22 @@ def toScreenCoords(pv):
 	py = ((1-(pv.y+1)*0.5)*ugfx.height())
 	return matrix.Vector3D(int(px), int(py), 1)
 
+def createCameraMatrix(x,y,z):
+    camera_transform = matrix.Matrix(4, 4)
+    camera_transform.m[0][3] = x
+    camera_transform.m[1][3] = y
+    camera_transform.m[2][3] = z
+    return camera_transform
+
+def createProjectionMatrix(fov, zfar, znear):
+    s = 1/(math.tan(math.radians(fov/2)))
+    proj = matrix.Matrix(4, 4)
+    proj.m[0][0] = s
+    proj.m[1][1] = s
+    proj.m[2][2] = -zfar/(zfar-znear)
+    proj.m[3][2] = -1.0
+    proj.m[2][3] = -(zfar*znear)/(zfar-znear)
+    return proj
 
 def createRotationMatrix(x_rotation, y_rotation, z_rotation):
     rot_x = matrix.Matrix(4,4)
@@ -122,6 +122,9 @@ def render(rotation):
         ugfx.polygon(0,0, poly[0], ugfx.WHITE) 
 		
 objects = [x for x in listdir(app_path) if ((".obj" in x)&(x[0] != "."))]
+# Set up static rendering matrices
+camera_transform = createCameraMatrix(0, 0, -5.0)
+proj = createProjectionMatrix(45.0, 100.0, 0.1)
 selected = 0
 loadObject(objects[selected])
 x_rotation = 0
