@@ -117,7 +117,6 @@ def render(mode, rotation):
     # (only half if backface culling).
     vsync()
     ugfx.clear(ugfx.BLACK)
-    ugfx.text(0,0, objects[selected], ugfx.GREEN)
     for poly in polys:
         if mode == FLAT:
             # Rubbish lighting calculation
