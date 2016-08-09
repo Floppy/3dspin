@@ -56,10 +56,10 @@ def createCameraMatrix(x,y,z):
     camera_transform.m[2][3] = z
     return camera_transform
 
-def createProjectionMatrix(fov, zfar, znear):
-    s = 1/(math.tan(math.radians(fov/2)))
+def createProjectionMatrix(horizontal_fov, zfar, znear):
+    s = 1/(math.tan(math.radians(horizontal_fov/2)))
     proj = matrix.Matrix(4, 4)
-    proj.m[0][0] = s
+    proj.m[0][0] = s * (240/320) # inverse aspect ratio
     proj.m[1][1] = s
     proj.m[2][2] = -zfar/(zfar-znear)
     proj.m[3][2] = -1.0
