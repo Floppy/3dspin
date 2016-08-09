@@ -45,9 +45,9 @@ def loadObject(filename):
     f.close()
 
 def toScreenCoords(pv):
-	px = ((pv.x+1)*0.5*ugfx.width())
-	py = ((1-(pv.y+1)*0.5)*ugfx.height())
-	return matrix.Vector3D(int(px), int(py), 1)
+	px = int((pv.x+1)*0.5*320)
+	py = int((1-(pv.y+1)*0.5)*240)
+	return [px, py]
 
 def createCameraMatrix(x,y,z):
     camera_transform = matrix.Matrix(4, 4)
@@ -104,14 +104,10 @@ def render(mode, rotation):
         # Only render things facing towards us (unless we're in wireframe mode)
         if (normal.z > 0) | (mode == WIREFRAME):
             # Convert to screen coordinates
-            screenpoly = []
-            for p in poly:
-                # Put the screenpoint in the list of transformed vertices
-                sp = toScreenCoords(p)
-                screenpoly.append([int(sp.x), int(sp.y)])
+            screenpoly = [toScreenCoords(p) for p in poly]
             # Store transformed polygon for final rendering,
             # and normal for lighting calculation
-            polys.append([screenpoly, normal])
+            polys.append([screenpoly, normal.z])
 
     # Render the transformed polygons to the screen.
     # We're doing all the maths, keeping transformed
@@ -125,7 +121,7 @@ def render(mode, rotation):
     for poly in polys:
         if mode == FLAT:
             # Rubbish lighting calculation
-            colour = int(min(poly[1].z, 1.0) * 255)
+            colour = int(min(poly[1], 1.0) * 255)
             ugcol = ugfx.html_color((colour << 16) | (colour << 8) | colour)
             # Render polygon        
             ugfx.fill_polygon(0,0, poly[0], ugcol)
