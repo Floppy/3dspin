@@ -66,23 +66,23 @@ def createProjectionMatrix(horizontal_fov, zfar, znear):
     proj.m[2][3] = -(zfar*znear)/(zfar-znear)
     return proj
 
-def createRotationMatrix(x_rotation, y_rotation, z_rotation):
+def createRotationMatrix(x_rotation, z_rotation):
     rot_x = matrix.Matrix(4,4)
     rot_x.m[1][1] = rot_x.m[2][2] = math.cos(x_rotation)
     rot_x.m[2][1] = math.sin(x_rotation)
     rot_x.m[1][2] = -rot_x.m[2][1]
 
-    rot_y = matrix.Matrix(4,4)
-    rot_y.m[0][0] = rot_y.m[2][2] = math.cos(y_rotation)
-    rot_y.m[0][2] = math.sin(y_rotation)
-    rot_y.m[2][0] = -rot_y.m[0][2]
-
+    # rot_y = matrix.Matrix(4,4)
+    # rot_y.m[0][0] = rot_y.m[2][2] = math.cos(y_rotation)
+    # rot_y.m[0][2] = math.sin(y_rotation)
+    # rot_y.m[2][0] = -rot_y.m[0][2]
+    # 
     rot_z = matrix.Matrix(4,4)
     rot_z.m[0][0] = rot_z.m[1][1] = math.cos(z_rotation)
     rot_z.m[1][0] = math.sin(z_rotation)
     rot_z.m[0][1] = -rot_z.m[1][0]
 
-    return rot_x * rot_y * rot_z
+    return rot_x * rot_z
 
 def render(mode, rotation):
     polys = []
@@ -162,7 +162,7 @@ mode = BACKFACECULL
 run = 1
 while run:
     # Update rotation matrix and render the scene
-    rotation = createRotationMatrix(x_rotation, 0, z_rotation)
+    rotation = createRotationMatrix(x_rotation, z_rotation)
     render(mode, rotation)
     # Handle the various inputs
     accel = imu.get_acceleration()
