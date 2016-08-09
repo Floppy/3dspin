@@ -10,7 +10,8 @@ import math
 from uos import listdir
 from utime import sleep_ms
 from imu import IMU
-
+import gc       
+                
 app_path = "apps/floppy~3dspin"
 matrix = __import__(app_path + "/matrix")
 
@@ -24,8 +25,7 @@ def loadObject(filename):
     global obj_faces
     obj_vertices = []
     obj_faces = []
-    path = app_path + "/" + filename
-    f = open(path)
+    f = open(app_path + "/" + filename)
     for line in f:
         if line[:2] == "v ":
             parts = line.split(" ")
@@ -36,12 +36,14 @@ def loadObject(filename):
                     float(parts[3])
                 )
             )
+            gc.collect()
         elif line[:2] == "f ":
             parts = line.split(" ")
             face = []
             for part in parts[1:]:
                 face.append(int(part.split("/",1)[0])-1)
             obj_faces.append(face)
+            gc.collect()
     f.close()
 
 def toScreenCoords(pv):
@@ -176,6 +178,7 @@ mode = BACKFACECULL
 # Main loop
 run = 1
 while run:
+    gc.collect()
     # Update rotation matrix and render the scene
     rotation = createRotationMatrix(x_rotation, z_rotation)
     render(mode, rotation)
