@@ -99,13 +99,14 @@ def render(rotation):
         # Only render things facing towards us
         if normal.z > 0:
             # Convert to screen coordinates
+            screenpoly = []
             for p in poly:
                 # Put the screenpoint in the list of transformed vertices
                 sp = toScreenCoords(p)
-                p = [int(sp.x), int(sp.y)]
+                screenpoly.append([int(sp.x), int(sp.y)])
             # Store transformed polygon for final rendering,
             # and normal for lighting calculation
-            polys.append([poly, normal])
+            polys.append([screenpoly, normal])
 
     # Render the transformed polygons to the screen
     # Currently, we're doing all the maths, keeping transformed
