@@ -118,8 +118,10 @@ def render(mode, rotation):
         ugcol = ugfx.WHITE
         if mode == FLAT:
             # Rubbish lighting calculation
-            colour = int(poly[1] * 255)
-            ugcol = ugfx.html_color((colour << 16) | (colour << 8) | colour)
+            colour5 = int(poly[1] * 31)
+            colour6 = int(poly[1] * 63)
+            # Create a 5-6-5 grey
+            ugcol = (colour5 << 11) | (colour6 << 5) | colour5
             # Render polygon        
             ugfx.fill_polygon(0,0, poly[0], ugcol)
         # Always draw the wireframe in the same colour to fill gaps left by the
