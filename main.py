@@ -68,28 +68,26 @@ def toScreenCoords(pv):
 	py = ((1-(pv.y+1)*0.5)*ugfx.height())
 	return matrix.Vector3D(int(px), int(py), 1)
 
-def render(x_rotation, y_rotation, z_rotation):
 
+def createRotationMatrix(x_rotation, y_rotation, z_rotation):
     rot_x = matrix.Matrix(4,4)
-    rot_x.m[1][1] = math.cos(math.radians(x_rotation))
-    rot_x.m[1][2] = -math.sin(math.radians(x_rotation))
-    rot_x.m[2][1] = math.sin(math.radians(x_rotation))
-    rot_x.m[2][2] = math.cos(math.radians(x_rotation))
+    rot_x.m[1][1] = rot_x.m[2][2] = math.cos(x_rotation)
+    rot_x.m[2][1] = math.sin(x_rotation)
+    rot_x.m[1][2] = -rot_x.m[2][1]
 
     rot_y = matrix.Matrix(4,4)
-    rot_y.m[0][0] = math.cos(math.radians(y_rotation))
-    rot_y.m[0][2] = math.sin(math.radians(y_rotation))
-    rot_y.m[2][0] = -math.sin(math.radians(y_rotation))
-    rot_y.m[2][2] = math.cos(math.radians(y_rotation))
+    rot_y.m[0][0] = rot_y.m[2][2] = math.cos(y_rotation)
+    rot_y.m[0][2] = math.sin(y_rotation)
+    rot_y.m[2][0] = -rot_y.m[0][2]
 
     rot_z = matrix.Matrix(4,4)
-    rot_z.m[0][0] = math.cos(math.radians(z_rotation))
-    rot_z.m[0][1] = -math.sin(math.radians(z_rotation))
-    rot_z.m[1][0] = math.sin(math.radians(z_rotation))
-    rot_z.m[1][1] = math.cos(math.radians(z_rotation))
+    rot_z.m[0][0] = rot_z.m[1][1] = math.cos(z_rotation)
+    rot_z.m[1][0] = math.sin(z_rotation)
+    rot_z.m[0][1] = -rot_z.m[1][0]
 
-    rot = rot_x * rot_y * rot_z
+    return rot_x * rot_y * rot_z
 
+def render(rotation):
     polys = []
     for i in range(len(faces)):
         # Transform face
@@ -130,7 +128,11 @@ x_rotation = 0
 y_rotation = 0
 z_rotation = 0
 while not buttons.is_pressed("BTN_MENU"):
-    render(x_rotation, y_rotation, z_rotation)
+    rotation = createRotationMatrix(
+        math.radians(x_rotation), 
+        math.radians(y_rotation), 
+        math.radians(z_rotation))
+    render(rotation)
     accel = imu.get_acceleration()    
     x_rotation += accel['z']*10
     if x_rotation >= 360:
