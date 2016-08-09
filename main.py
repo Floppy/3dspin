@@ -154,10 +154,10 @@ objects = [x for x in listdir(app_path) if ((".obj" in x) & (x[0] != "."))]
 selected = 0
 loadObject(objects[selected])
 
-# We'll track each rotation separately
+# We'll track each axis separately
 x_rotation = 0
-y_rotation = 0
 z_rotation = 0
+pi_2 = math.pi / 2
 
 mode = BACKFACECULL
 
@@ -165,22 +165,12 @@ mode = BACKFACECULL
 run = 1
 while run:
     # Update rotation matrix and render the scene
-    rotation = createRotationMatrix(
-        math.radians(x_rotation), 
-        math.radians(y_rotation), 
-        math.radians(z_rotation))
+    rotation = createRotationMatrix(x_rotation, 0, z_rotation)
     render(mode, rotation)
     # Handle the various inputs
-    accel = imu.get_acceleration()    
-    x_rotation += accel['z']*10
-    if x_rotation >= 360:
-        x_rotation = 0
-    y_rotation += accel['x']*10
-    if y_rotation >= 360:
-        y_rotation = 0
-    z_rotation -= accel['x']*10
-    if z_rotation >= 360:
-        z_rotation = 0
+    accel = imu.get_acceleration()
+    x_rotation = -accel['z'] * pi_2
+    z_rotation = accel['x'] * pi_2
     if buttons.is_pressed("BTN_B"):
         selected += 1
         if selected >= len(objects):
