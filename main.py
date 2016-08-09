@@ -113,15 +113,12 @@ def render(mode, rotation):
             # and normal for lighting calculation
             polys.append([screenpoly, normal])
 
-    # Render the transformed polygons to the screen
-    # Currently, we're doing all the maths, keeping transformed
+    # Render the transformed polygons to the screen.
+    # We're doing all the maths, keeping transformed
     # copies of the object faces, and then rendering after
     # This reduces tearing, but doubles the memory requirements for
-    # the object as we make an copy of half the object every frame.
-    # (only half because of backface culling).
-    # If we could get control of the tearing, we could render
-    # the polygon as soon as we've calculated it, thereby reducing
-    # memory use.
+    # the object as we make a copy of the object every frame.
+    # (only half if backface culling).
     vsync()
     ugfx.clear(ugfx.BLACK)
     ugfx.text(0,0, objects[selected], ugfx.GREEN)
