@@ -93,12 +93,8 @@ def render(mode, rotation):
             v = vertices[vertex_index]
             # Rotate 
             v = rotation * v
-            # Camera Translation
-            v = camera_transform * v
-            # Project
-            v = proj * v
-            # Store
-            poly.append(v)
+            # Camera Translation + Projection in one go
+            poly.append(camera_projection * v)
         # Work out the face normal for backface culling
         normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
         # Only render things facing towards us (unless we're in wireframe mode)
@@ -146,6 +142,7 @@ ugfx.set_tear_line(1)
 # Set up static rendering matrices
 camera_transform = createCameraMatrix(0, 0, -5.0)
 proj = createProjectionMatrix(45.0, 100.0, 0.1)
+camera_projection = proj * camera_transform
 
 # Get the list of available objects, and load the first one
 vertices = []
