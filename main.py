@@ -81,30 +81,31 @@ def createRotationMatrix(x_rotation, y_rotation, z_rotation):
 
 def render(rotation):
     polys = []
-    for i in range(len(faces)):
+    for face in faces:
         # Transform face
-    	poly = []
-    	for j in range(len(faces[i])):
-            v = vertices[faces[i][j]]
+        poly = []
+        for vertex_index in face:
+            v = vertices[vertex_index]
             # Rotate 
-            p = rot*v
+            v = rotation * v
             # Camera Translation
-            p = camera_transform * p
+            v = camera_transform * v
             # Project
-            p = proj*p
+            v = proj * v
             # Store
-            poly.append(p)
-        # Convert to screen coordinates
-        screen_poly = []
-        for p in poly:
-            # Put the screenpoint in the list of transformed vertices
-            sp = toScreenCoords(p)
-            screen_poly.append([int(sp.x), int(sp.y)])
+            poly.append(v)
         # Work out the face normal for backface culling
         normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
         # Only render things facing towards us
-    	if normal.z > 0:
-            polys.append([screen_poly, normal])
+        if normal.z > 0:
+            # Convert to screen coordinates
+            for p in poly:
+                # Put the screenpoint in the list of transformed vertices
+                sp = toScreenCoords(p)
+                p = [int(sp.x), int(sp.y)]
+            # Store transformed polygon for final rendering,
+            # and normal for lighting calculation
+            polys.append([poly, normal])
 
     # Render
     ugfx.clear(ugfx.BLACK)
