@@ -167,7 +167,8 @@ z_rotation = 0
 mode = BACKFACECULL
 
 # Main loop
-while not buttons.is_pressed("BTN_MENU"):
+run = 1
+while run:
     # Update rotation matrix and render the scene
     rotation = createRotationMatrix(
         math.radians(x_rotation), 
@@ -196,3 +197,5 @@ while not buttons.is_pressed("BTN_MENU"):
         if mode > 3:
             mode = 1
         sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
+    if buttons.is_pressed("BTN_MENU"):
+        run = 0
