@@ -97,6 +97,7 @@ def render(mode, rotation):
             poly.append(camera_projection * v)
         # Work out the face normal for backface culling
         normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
+        normal.normalize()
         # Only render things facing towards us (unless we're in wireframe mode)
         if (normal.z > 0) | (mode == WIREFRAME):
             # Convert to screen coordinates
@@ -117,7 +118,7 @@ def render(mode, rotation):
         ugcol = ugfx.WHITE
         if mode == FLAT:
             # Rubbish lighting calculation
-            colour = int(min(poly[1], 1.0) * 255)
+            colour = int(poly[1] * 255)
             ugcol = ugfx.html_color((colour << 16) | (colour << 8) | colour)
             # Render polygon        
             ugfx.fill_polygon(0,0, poly[0], ugcol)
