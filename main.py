@@ -87,17 +87,12 @@ def createRotationMatrix(x_rotation, z_rotation):
 def render(mode, rotation):
     polys = []
     for face in faces:
-        # Transform face
-        poly = []
-        for vertex_index in face:
-            v = vertices[vertex_index]
-            # Rotate 
-            v = rotation * v
-            poly.append(v)
+        # Rotate face into position
+        poly = [rotation * vertices[v] for v in face]
         # Work out the face normal for lighting
         lighting_normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
         lighting_normal.normalize()
-        # Camera Translation + Projection in one go
+        # Camera Translation + Projection all at once
         poly = [camera_projection * v for v in poly]
         # Work out the projected face normal for backface culling
         proj_normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
