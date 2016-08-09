@@ -13,14 +13,6 @@ from imu import IMU
 
 app_path = "apps/floppy~3dspin"
 matrix = __import__(app_path + "/matrix")
-            
-ugfx.init()
-imu=IMU()
-buttons.init()
-
-vertices = []
-faces = []
-
 
 def loadObject(filename):
     global vertices
@@ -121,10 +113,20 @@ def render(rotation):
         # Render polygon        
         ugfx.polygon(0,0, poly[0], ugfx.WHITE) 
 		
-objects = [x for x in listdir(app_path) if ((".obj" in x)&(x[0] != "."))]
+	
+# Initialise hardware
+ugfx.init()
+imu=IMU()
+buttons.init()
+
 # Set up static rendering matrices
 camera_transform = createCameraMatrix(0, 0, -5.0)
 proj = createProjectionMatrix(45.0, 100.0, 0.1)
+
+# Get the list of available objects, and load the first one
+vertices = []
+faces = []
+objects = [x for x in listdir(app_path) if ((".obj" in x) & (x[0] != "."))]
 selected = 0
 loadObject(objects[selected])
 x_rotation = 0
