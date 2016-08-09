@@ -93,18 +93,21 @@ def render(mode, rotation):
             v = vertices[vertex_index]
             # Rotate 
             v = rotation * v
-            # Camera Translation + Projection in one go
-            poly.append(camera_projection * v)
-        # Work out the face normal for backface culling
-        normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
-        normal.normalize()
+            poly.append(v)
+        # Work out the face normal for lighting
+        lighting_normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
+        lighting_normal.normalize()
+        # Camera Translation + Projection in one go
+        poly = [camera_projection * v for v in poly]
+        # Work out the projected face normal for backface culling
+        proj_normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
         # Only render things facing towards us (unless we're in wireframe mode)
-        if (normal.z > 0) | (mode == WIREFRAME):
+        if (proj_normal.z > 0) | (mode == WIREFRAME):
             # Convert to screen coordinates
             screenpoly = [toScreenCoords(p) for p in poly]
             # Store transformed polygon for final rendering,
             # and normal for lighting calculation
-            polys.append([screenpoly, normal.z])
+            polys.append([screenpoly, lighting_normal.z])
 
     # Render the transformed polygons to the screen.
     # We're doing all the maths, keeping transformed
@@ -117,7 +120,7 @@ def render(mode, rotation):
     for poly in polys:
         ugcol = ugfx.WHITE
         if mode == FLAT:
-            # Rubbish lighting calculation
+            # Simple lighting calculation
             colour5 = int(poly[1] * 31)
             colour6 = int(poly[1] * 63)
             # Create a 5-6-5 grey
