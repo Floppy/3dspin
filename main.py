@@ -20,16 +20,16 @@ FLAT = 2
 WIREFRAME = 3
 
 def loadObject(filename):
-    global vertices
-    global faces
-    vertices = []
-    faces = []
+    global obj_vertices
+    global obj_faces
+    obj_vertices = []
+    obj_faces = []
     path = app_path + "/" + filename
     f = open(path)
     for line in f:
         if line[:2] == "v ":
             parts = line.split(" ")
-            vertices.append(
+            obj_vertices.append(
                 matrix.Vector3D(
                     float(parts[1]),
                     float(parts[2]),
@@ -41,7 +41,7 @@ def loadObject(filename):
             face = []
             for part in parts[1:]:
                 face.append(int(part.split("/",1)[0])-1)
-            faces.append(face)
+            obj_faces.append(face)
     f.close()
 
 def toScreenCoords(pv):
@@ -84,25 +84,37 @@ def createRotationMatrix(x_rotation, z_rotation):
 
     return rot_x * rot_z
 
+def normal(face, vertices, normalize = True):
+    # Work out the face normal for lighting
+    normal = (vertices[face[1]]-vertices[face[0]]).cross(vertices[face[2]]-vertices[face[0]])
+    if normalize == True:
+        normal.normalize()
+    return normal
+
 def render(mode, rotation):
     polys = []
-    for face in faces:
-        # Rotate face into position
-        poly = [rotation * vertices[v] for v in face]
-        # Work out the face normal for lighting
-        lighting_normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
-        lighting_normal.normalize()
-        # Camera Translation + Projection all at once
-        poly = [camera_projection * v for v in poly]
-        # Work out the projected face normal for backface culling
-        proj_normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
+    # Rotate all the vertices in one go
+    vertices = [rotation * vertex for vertex in obj_vertices]
+    # Calculate normal for each face (for lighting)
+    face_normals = [normal(face, vertices) for face in obj_faces]
+    # Project (with camera) all the vertices in one go as well
+    vertices = [camera_projection * vertex for vertex in vertices]
+    # Calculate projected normals for each face
+    proj_normals = [normal(face, vertices, False) for face in obj_faces]
+    # Convert to screen coordinates all at once
+    # We could do this faster by only converting vertices that are
+    # in faces that will be need rendered, but it's likely that test
+    # would take longer.
+    vertices = [toScreenCoords(v) for v in vertices]
+    # Render each face
+    for index in range(len(obj_faces)):
         # Only render things facing towards us (unless we're in wireframe mode)
-        if (proj_normal.z > 0) | (mode == WIREFRAME):
-            # Convert to screen coordinates
-            screenpoly = [toScreenCoords(p) for p in poly]
+        if (proj_normals[index].z > 0) | (mode == WIREFRAME):
+            # Create 2D polygon for face
+            screenpoly = [vertices[v] for v in obj_faces[index]]
             # Store transformed polygon for final rendering,
             # and normal for lighting calculation
-            polys.append([screenpoly, lighting_normal.z])
+            polys.append([screenpoly, face_normals[index].z])
 
     # Render the transformed polygons to the screen.
     # We're doing all the maths, keeping transformed
@@ -148,8 +160,8 @@ proj = createProjectionMatrix(45.0, 100.0, 0.1)
 camera_projection = proj * camera_transform
 
 # Get the list of available objects, and load the first one
-vertices = []
-faces = []
+obj_vertices = []
+obj_faces = []
 objects = [x for x in listdir(app_path) if ((".obj" in x) & (x[0] != "."))]
 selected = 0
 loadObject(objects[selected])
