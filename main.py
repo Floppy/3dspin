@@ -14,6 +14,11 @@ from imu import IMU
 app_path = "apps/floppy~3dspin"
 matrix = __import__(app_path + "/matrix")
 
+# Rendering modes
+BACKFACECULL = 1
+FLAT = 2
+WIREFRAME = 3
+
 def loadObject(filename):
     global vertices
     global faces
@@ -79,7 +84,7 @@ def createRotationMatrix(x_rotation, y_rotation, z_rotation):
 
     return rot_x * rot_y * rot_z
 
-def render(rotation):
+def render(mode, rotation):
     polys = []
     for face in faces:
         # Transform face
@@ -96,8 +101,8 @@ def render(rotation):
             poly.append(v)
         # Work out the face normal for backface culling
         normal = (poly[1]-poly[0]).cross(poly[2]-poly[0])
-        # Only render things facing towards us
-        if normal.z > 0:
+        # Only render things facing towards us (unless we're in wireframe mode)
+        if (normal.z > 0) | (mode == WIREFRAME):
             # Convert to screen coordinates
             screenpoly = []
             for p in poly:
@@ -120,10 +125,15 @@ def render(rotation):
     
     ugfx.clear(ugfx.BLACK)
     ugfx.text(0,0, objects[selected], ugfx.GREEN)
-    for poly in polys:	
-        # Render polygon        
-        ugfx.polygon(0,0, poly[0], ugfx.WHITE) 
-		
+    for poly in polys:
+        if mode == FLAT:
+            # Rubbish lighting calculation
+            colour = int(min(poly[1].z, 1.0) * 255)
+            ugcol = ugfx.html_color((colour << 16) | (colour << 8) | colour)
+            # Render polygon        
+            ugfx.fill_polygon(0,0, poly[0], ugcol)
+        else:
+            ugfx.polygon(0,0, poly[0], ugfx.WHITE)
 	
 # Initialise hardware
 ugfx.init()
@@ -146,6 +156,8 @@ x_rotation = 0
 y_rotation = 0
 z_rotation = 0
 
+mode = BACKFACECULL
+
 # Main loop
 while not buttons.is_pressed("BTN_MENU"):
     # Update rotation matrix and render the scene
@@ -153,7 +165,7 @@ while not buttons.is_pressed("BTN_MENU"):
         math.radians(x_rotation), 
         math.radians(y_rotation), 
         math.radians(z_rotation))
-    render(rotation)
+    render(mode, rotation)
     # Handle the various inputs
     accel = imu.get_acceleration()    
     x_rotation += accel['z']*10
@@ -172,8 +184,7 @@ while not buttons.is_pressed("BTN_MENU"):
         loadObject(objects[selected])
         sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
     if buttons.is_pressed("BTN_A"):
-        selected -= 1
-        if selected < 0:
-            selected =  len(objects) - 1
-        loadObject(objects[selected])
+        mode += 1
+        if mode > 3:
+            mode = 1
         sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
