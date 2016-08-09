@@ -114,14 +114,16 @@ def render(mode, rotation):
     vsync()
     ugfx.clear(ugfx.BLACK)
     for poly in polys:
+        ugcol = ugfx.WHITE
         if mode == FLAT:
             # Rubbish lighting calculation
             colour = int(min(poly[1], 1.0) * 255)
             ugcol = ugfx.html_color((colour << 16) | (colour << 8) | colour)
             # Render polygon        
             ugfx.fill_polygon(0,0, poly[0], ugcol)
-        else:
-            ugfx.polygon(0,0, poly[0], ugfx.WHITE)
+        # Always draw the wireframe in the same colour to fill gaps left by the
+        # fill_polygon method
+        ugfx.polygon(0,0, poly[0], ugcol)
 	
 def vsync():
     while(tear.value() == 0):
