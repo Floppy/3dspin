@@ -9,11 +9,23 @@ class Vector3D:
 		self.y = y
 		self.z = z
 
+	def magnitude(self):
+		return math.sqrt(self.x*self.x+self.y*self.y+self.z*self.z)
+
 	def __sub__(self, v):
 		if isinstance(v, Vector3D):
 			return Vector3D(self.x-v.x, self.y-v.y, self.z-v.z)
 		else:
 			raise Exception('*** Vector3D: error, sub not with a vector! ***')
+
+	def normalize(self):
+		mag = self.magnitude()
+		if (mag > 0.0):
+			self.x /= mag
+			self.y /= mag
+			self.z /= mag
+		else:
+			raise Exception('*** Vector: error, normalizing zero vector! ***')
 
 	def cross(self, v): #cross product
 		if isinstance(v, Vector3D):
