@@ -122,7 +122,7 @@ def render(mode, rotation):
     # If we could get control of the tearing, we could render
     # the polygon as soon as we've calculated it, thereby reducing
     # memory use.
-    
+    vsync()
     ugfx.clear(ugfx.BLACK)
     ugfx.text(0,0, objects[selected], ugfx.GREEN)
     for poly in polys:
@@ -135,10 +135,21 @@ def render(mode, rotation):
         else:
             ugfx.polygon(0,0, poly[0], ugfx.WHITE)
 	
+def vsync():
+    while(tear.value() == 0):
+        pass
+    while(tear.value()):
+        pass
+    
 # Initialise hardware
 ugfx.init()
 imu=IMU()
 buttons.init()
+
+# Enable tear detection for vsync
+ugfx.enable_tear()
+tear = pyb.Pin("TEAR", pyb.Pin.IN)
+ugfx.set_tear_line(1)
 
 # Set up static rendering matrices
 camera_transform = createCameraMatrix(0, 0, -5.0)
