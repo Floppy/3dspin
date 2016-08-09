@@ -11,6 +11,7 @@ from uos import listdir
 from utime import sleep_ms
 from imu import IMU
 import gc       
+import pyb
                 
 app_path = "apps/floppy~3dspin"
 matrix = __import__(app_path + "/matrix")
