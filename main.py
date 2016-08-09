@@ -107,7 +107,16 @@ def render(rotation):
             # and normal for lighting calculation
             polys.append([poly, normal])
 
-    # Render
+    # Render the transformed polygons to the screen
+    # Currently, we're doing all the maths, keeping transformed
+    # copies of the object faces, and then rendering after
+    # This reduces tearing, but doubles the memory requirements for
+    # the object as we make an copy of half the object every frame.
+    # (only half because of backface culling).
+    # If we could get control of the tearing, we could render
+    # the polygon as soon as we've calculated it, thereby reducing
+    # memory use.
+    
     ugfx.clear(ugfx.BLACK)
     ugfx.text(0,0, objects[selected], ugfx.GREEN)
     for poly in polys:	
@@ -130,15 +139,21 @@ faces = []
 objects = [x for x in listdir(app_path) if ((".obj" in x) & (x[0] != "."))]
 selected = 0
 loadObject(objects[selected])
+
+# We'll track each rotation separately
 x_rotation = 0
 y_rotation = 0
 z_rotation = 0
+
+# Main loop
 while not buttons.is_pressed("BTN_MENU"):
+    # Update rotation matrix and render the scene
     rotation = createRotationMatrix(
         math.radians(x_rotation), 
         math.radians(y_rotation), 
         math.radians(z_rotation))
     render(rotation)
+    # Handle the various inputs
     accel = imu.get_acceleration()    
     x_rotation += accel['z']*10
     if x_rotation >= 360:
