@@ -99,11 +99,13 @@ def render(mode, rotation):
     # Rotate all the vertices in one go
     vertices = [rotation * vertex for vertex in obj_vertices]
     # Calculate normal for each face (for lighting)
-    face_normals = [normal(face, vertices) for face in obj_faces]
+    if mode == FLAT:
+        face_normal_zs = [normal(face, vertices).z for face in obj_faces]
     # Project (with camera) all the vertices in one go as well
     vertices = [camera_projection * vertex for vertex in vertices]
     # Calculate projected normals for each face
-    proj_normals = [normal(face, vertices, False) for face in obj_faces]
+    if mode != WIREFRAME:
+        proj_normal_zs = [normal(face, vertices, False).z for face in obj_faces]
     # Convert to screen coordinates all at once
     # We could do this faster by only converting vertices that are
     # in faces that will be need rendered, but it's likely that test
