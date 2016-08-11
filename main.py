@@ -146,7 +146,27 @@ def vsync():
         pass
     while(tear.value()):
         pass
-    
+
+def calculateRotation(smoothing, accelerometer):
+    # Keep a list of recent rotations to smooth things out
+    global x_rotations
+    global z_rotations
+    # First, pop off the oldest rotation
+    if len(x_rotations) >= smoothing:
+        x_rotations = x_rotations[1:]
+    if len(z_rotations) >= smoothing:
+        z_rotations = z_rotations[1:]
+    # Now append a new rotation
+    pi_2 = math.pi / 2
+    x_rotations.append(-accelerometer['z'] * pi_2)
+    z_rotations.append(accelerometer['x'] * pi_2)
+    # Calculate rotation matrix
+    return createRotationMatrix(
+        # this averaging isn't correct in the first <smoothing> frames, but who cares
+        sum(x_rotations) / smoothing, 
+        sum(z_rotations) / smoothing
+    )        
+
 # Initialise hardware
 ugfx.init()
 imu=IMU()
@@ -170,9 +190,9 @@ selected = 0
 loadObject(objects[selected])
 
 # We'll track each axis separately
-x_rotation = 0
-z_rotation = 0
-pi_2 = math.pi / 2
+x_rotations = []
+z_rotations = []
+smoothing = 5
 
 mode = BACKFACECULL
 
@@ -180,13 +200,12 @@ mode = BACKFACECULL
 run = 1
 while run:
     gc.collect()
-    # Update rotation matrix and render the scene
-    rotation = createRotationMatrix(x_rotation, z_rotation)
-    render(mode, rotation)
-    # Handle the various inputs
-    accel = imu.get_acceleration()
-    x_rotation = -accel['z'] * pi_2
-    z_rotation = accel['x'] * pi_2
+    # Render the scene
+    render(
+        mode, 
+        calculateRotation(smoothing, imu.get_acceleration())
+    )
+    # Button presses
     if buttons.is_pressed("BTN_B"):
         selected += 1
         if selected >= len(objects):
