@@ -13,10 +13,10 @@ class Vector3D:
 		return math.sqrt(self.x*self.x+self.y*self.y+self.z*self.z)
 
 	def __sub__(self, v):
-		if isinstance(v, Vector3D):
+		# if isinstance(v, Vector3D):
 			return Vector3D(self.x-v.x, self.y-v.y, self.z-v.z)
-		else:
-			raise Exception('*** Vector3D: error, sub not with a vector! ***')
+		# else:
+		# 	raise Exception('*** Vector3D: error, sub not with a vector! ***')
 
 	def normalize(self):
 		mag = self.magnitude()
@@ -28,10 +28,10 @@ class Vector3D:
 			raise Exception('*** Vector: error, normalizing zero vector! ***')
 
 	def cross(self, v): #cross product
-		if isinstance(v, Vector3D):
+		# if isinstance(v, Vector3D):
 			return Vector3D(self.y*v.z-self.z*v.y, self.z*v.x-self.x*v.z, self.x*v.y-self.y*v.x)
-		else:
-			raise Exception('*** Vector: error, cross product not with a vector! ***')
+		# else:
+		# 	raise Exception('*** Vector: error, cross product not with a vector! ***')
 
 
 #The layout of the matrix (row- or column-major) matters only when the user reads from or writes to the matrix (indexing). For example in the multiplication function we know that the first components of the Matrix-vectors need to be multiplied by the vector. The memory-layout is not important
@@ -39,8 +39,8 @@ class Matrix:
 	''' Column-major order '''
 
 	def __init__(self, rows, cols, createidentity=True):# (2,2) creates a 2*2 Matrix
-		if rows < 2 or cols < 2:
-			raise Exception('*** Matrix: error, getitem((row, col)), row, col problem! ***')
+		# if rows < 2 or cols < 2:
+		# 	raise Exception('*** Matrix: error, getitem((row, col)), row, col problem! ***')
 		self.rows = rows
 		self.cols = cols
 		self.m = [[0.0]*rows for x in range(cols)]
