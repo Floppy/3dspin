@@ -85,7 +85,7 @@ def createRotationMatrix(x_rotation, z_rotation):
     rot_z.m[1][0] = math.sin(z_rotation)
     rot_z.m[0][1] = -rot_z.m[1][0]
 
-    return rot_x * rot_z
+    return rot_z * rot_x
 
 def normal(face, vertices, normalize = True):
     # Work out the face normal for lighting
