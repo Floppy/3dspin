@@ -16,11 +16,6 @@ import pyb
 app_path = "apps/floppy~3dspin"
 matrix = __import__(app_path + "/matrix")
 
-# Rendering modes
-BACKFACECULL = 1
-FLAT = 2
-WIREFRAME = 3
-
 def loadObject(filename):
     global obj_vertices
     global obj_faces
@@ -180,15 +175,21 @@ objects = [x for x in listdir(app_path) if ((".obj" in x) & (x[0] != "."))]
 selected = 0
 loadObject(objects[selected])
 
-# We'll track each axis separately
+# Set up rotation tracking arrays
 x_rotations = []
 z_rotations = []
+# Smooth rotations over 5 frames
 smoothing = 5
 
+# Rendering modes
+BACKFACECULL = 1
+FLAT = 2
+WIREFRAME = 3
+# Start with backface culling mode
 mode = BACKFACECULL
 
 # Main loop
-run = 1
+run = True
 while run:
     gc.collect()
     # Render the scene
@@ -209,4 +210,4 @@ while run:
             mode = 1
         sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
     if buttons.is_pressed("BTN_MENU"):
-        run = 0
+        run = False
