@@ -95,7 +95,6 @@ def normal(face, vertices, normalize = True):
     return normal
 
 def render(mode, rotation):
-    polys = []
     # Rotate all the vertices in one go
     vertices = [rotation * vertex for vertex in obj_vertices]
     # Calculate normal for each face (for lighting)
@@ -111,38 +110,28 @@ def render(mode, rotation):
     # in faces that will be need rendered, but it's likely that test
     # would take longer.
     vertices = [toScreenCoords(v) for v in vertices]
-    # Render each face
-    for index in range(len(obj_faces)):
-        # Only render things facing towards us (unless we're in wireframe mode)
-        if (proj_normals[index].z > 0) | (mode == WIREFRAME):
-            # Create 2D polygon for face
-            screenpoly = [vertices[v] for v in obj_faces[index]]
-            # Store transformed polygon for final rendering,
-            # and normal for lighting calculation
-            polys.append([screenpoly, face_normals[index].z])
-
-    # Render the transformed polygons to the screen.
-    # We're doing all the maths, keeping transformed
-    # copies of the object faces, and then rendering after
-    # This reduces tearing, but doubles the memory requirements for
-    # the object as we make a copy of the object every frame.
-    # (only half if backface culling).
+    # Render the faces to the screen
     vsync()
     ugfx.clear(ugfx.BLACK)
-    for poly in polys:
-        ugcol = ugfx.WHITE
-        if mode == FLAT:
-            # Simple lighting calculation
-            colour5 = int(poly[1] * 31)
-            colour6 = int(poly[1] * 63)
-            # Create a 5-6-5 grey
-            ugcol = (colour5 << 11) | (colour6 << 5) | colour5
-            # Render polygon        
-            ugfx.fill_polygon(0,0, poly[0], ugcol)
-        # Always draw the wireframe in the same colour to fill gaps left by the
-        # fill_polygon method
-        ugfx.polygon(0,0, poly[0], ugcol)
-	
+    for index in range(len(obj_faces)):
+        # Only render things facing towards us (unless we're in wireframe mode)
+        if (mode == WIREFRAME) or (proj_normal_zs[index] > 0):
+            # Convert polygon
+            poly = [vertices[v] for v in obj_faces[index]]
+            # Calculate colour and render
+            ugcol = ugfx.WHITE
+            if mode == FLAT:
+                # Simple lighting calculation
+                colour5 = int(face_normal_zs[index] * 31)
+                colour6 = int(face_normal_zs[index] * 63)
+                # Create a 5-6-5 grey
+                ugcol = (colour5 << 11) | (colour6 << 5) | colour5
+                # Render polygon        
+                ugfx.fill_polygon(0,0, poly, ugcol)
+            # Always draw the wireframe in the same colour to fill gaps left by the
+            # fill_polygon method
+            ugfx.polygon(0,0, poly, ugcol)
+            	
 def vsync():
     while(tear.value() == 0):
         pass
