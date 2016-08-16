@@ -7,8 +7,8 @@
 import ugfx
 import buttons
 import math
-from uos import listdir
 from utime import sleep_ms
+from os import listdir
 from imu import IMU
 import gc       
 import pyb
