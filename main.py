@@ -89,6 +89,15 @@ def normal(face, vertices, normalize = True):
         normal.normalize()
     return normal
 
+def clear_screen():
+    # Selectively clear the screen by re-rendering the previous frame in black
+    global last_polygons
+    global last_mode
+    for poly in last_polygons:
+        if last_mode == FLAT:
+            ugfx.fill_polygon(0,0, poly, ugfx.BLACK)
+        ugfx.polygon(0,0, poly, ugfx.BLACK)
+
 def render(mode, rotation):
     # Rotate all the vertices in one go
     vertices = [rotation * vertex for vertex in obj_vertices]
@@ -107,7 +116,13 @@ def render(mode, rotation):
     vertices = [toScreenCoords(v) for v in vertices]
     # Render the faces to the screen
     vsync()
-    ugfx.clear(ugfx.BLACK)
+    clear_screen()    
+
+    global last_polygons
+    global last_mode
+    last_polygons = []
+    last_mode = mode
+
     for index in range(len(obj_faces)):
         # Only render things facing towards us (unless we're in wireframe mode)
         if (mode == WIREFRAME) or (proj_normal_zs[index] > 0):
@@ -126,6 +141,7 @@ def render(mode, rotation):
             # Always draw the wireframe in the same colour to fill gaps left by the
             # fill_polygon method
             ugfx.polygon(0,0, poly, ugcol)
+            last_polygons.append(poly)
             	
 def vsync():
     while(tear.value() == 0):
@@ -155,6 +171,7 @@ def calculateRotation(smoothing, accelerometer):
 
 # Initialise hardware
 ugfx.init()
+ugfx.clear(ugfx.BLACK)
 imu=IMU()
 buttons.init()
 
@@ -187,6 +204,9 @@ FLAT = 2
 WIREFRAME = 3
 # Start with backface culling mode
 mode = BACKFACECULL
+
+last_polygons = []
+last_mode = WIREFRAME
 
 # Main loop
 run = True
