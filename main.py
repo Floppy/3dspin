@@ -17,6 +17,7 @@ app_path = "apps/floppy~3dspin"
 matrix = __import__(app_path + "/matrix")
 
 def loadObject(filename):
+    print(filename)
     global obj_vertices
     global obj_faces
     obj_vertices = []
