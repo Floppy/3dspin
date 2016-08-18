@@ -7,12 +7,12 @@
 import ugfx
 import buttons
 import math
-from utime import sleep_ms
 from os import listdir
+import time
 from imu import IMU
 import gc       
 import pyb
-                
+    
 app_path = "apps/floppy~3dspin"
 matrix = __import__(app_path + "/matrix")
 
@@ -232,11 +232,11 @@ while run:
         if selected >= len(objects):
             selected = 0
         loadObject(objects[selected])
-        sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
+        time.sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
     if buttons.is_pressed("BTN_A"):
         mode += 1
         if mode > 3:
             mode = 1
-        sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
+        time.sleep_ms(500) # Wait a while to avoid skipping ahead if the user still has the button down
     if buttons.is_pressed("BTN_MENU"):
         run = False
