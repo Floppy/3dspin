@@ -64,23 +64,23 @@ def createProjectionMatrix(horizontal_fov, zfar, znear):
     proj.m[2][3] = -(zfar*znear)/(zfar-znear)
     return proj
 
-def createRotationMatrix(x_rotation, z_rotation):
+def createRotationMatrix(x_rotation, y_rotation, z_rotation):
     rot_x = matrix.Matrix(4,4)
     rot_x.m[1][1] = rot_x.m[2][2] = math.cos(x_rotation)
     rot_x.m[2][1] = math.sin(x_rotation)
     rot_x.m[1][2] = -rot_x.m[2][1]
 
-    # rot_y = matrix.Matrix(4,4)
-    # rot_y.m[0][0] = rot_y.m[2][2] = math.cos(y_rotation)
-    # rot_y.m[0][2] = math.sin(y_rotation)
-    # rot_y.m[2][0] = -rot_y.m[0][2]
-    # 
+    rot_y = matrix.Matrix(4,4)
+    rot_y.m[0][0] = rot_y.m[2][2] = math.cos(y_rotation)
+    rot_y.m[0][2] = math.sin(y_rotation)
+    rot_y.m[2][0] = -rot_y.m[0][2]
+    
     rot_z = matrix.Matrix(4,4)
     rot_z.m[0][0] = rot_z.m[1][1] = math.cos(z_rotation)
     rot_z.m[1][0] = math.sin(z_rotation)
     rot_z.m[0][1] = -rot_z.m[1][0]
 
-    return rot_z * rot_x
+    return rot_z * rot_x * rot_y
 
 def normal(face, vertices, normalize = True):
     # Work out the face normal for lighting
@@ -166,6 +166,7 @@ def calculateRotation(smoothing, accelerometer):
     return createRotationMatrix(
         # this averaging isn't correct in the first <smoothing> frames, but who cares
         sum(x_rotations) / smoothing, 
+        math.radians(y_rotation),
         sum(z_rotations) / smoothing
     )        
 
@@ -195,6 +196,7 @@ loadObject(objects[selected])
 # Set up rotation tracking arrays
 x_rotations = []
 z_rotations = []
+y_rotation = 0
 # Smooth rotations over 5 frames
 smoothing = 5
 
@@ -218,6 +220,12 @@ while run:
         calculateRotation(smoothing, imu.get_acceleration())
     )
     # Button presses
+    if buttons.is_pressed("JOY_LEFT"):
+        y_rotation -= 5
+    if buttons.is_pressed("JOY_RIGHT"):
+        y_rotation += 5
+    if buttons.is_pressed("JOY_CENTER"):
+        y_rotation = 0
     if buttons.is_pressed("BTN_B"):
         selected += 1
         if selected >= len(objects):

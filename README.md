@@ -18,11 +18,12 @@ python3 test/pyboard.py main.py --device=/dev/tty.usbmodem1422
 
 ## Usage
 
+Move the badge to rotate the object in X and Z (static is with the badge hanging vertically).
+
 * A: Change rendering mode
 * B: Change model
+* Joystick: Rotate left / right, and click to centre
 * Menu: Quit
-
-Rotate the badge to rotate the object (static is with the badge hanging vertically).
 
 ## Adding more models
 
