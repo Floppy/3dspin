@@ -1,7 +1,6 @@
 # Taken from https://sites.google.com/site/3dprogramminginpython/
 
-import math
-
+from math import sqrt
 
 class Vector3D:
 	def __init__(self, x=0.0, y=0.0, z=0.0):
@@ -13,10 +12,7 @@ class Vector3D:
 		return math.sqrt(self.x*self.x+self.y*self.y+self.z*self.z)
 
 	def __sub__(self, v):
-		# if isinstance(v, Vector3D):
-			return Vector3D(self.x-v.x, self.y-v.y, self.z-v.z)
-		# else:
-		# 	raise Exception('*** Vector3D: error, sub not with a vector! ***')
+		return Vector3D(self.x-v.x, self.y-v.y, self.z-v.z)
 
 	def normalize(self):
 		mag = self.magnitude()
@@ -28,10 +24,7 @@ class Vector3D:
 			raise Exception('*** Vector: error, normalizing zero vector! ***')
 
 	def cross(self, v): #cross product
-		# if isinstance(v, Vector3D):
-			return Vector3D(self.y*v.z-self.z*v.y, self.z*v.x-self.x*v.z, self.x*v.y-self.y*v.x)
-		# else:
-		# 	raise Exception('*** Vector: error, cross product not with a vector! ***')
+		return Vector3D(self.y*v.z-self.z*v.y, self.z*v.x-self.x*v.z, self.x*v.y-self.y*v.x)
 
 
 #The layout of the matrix (row- or column-major) matters only when the user reads from or writes to the matrix (indexing). For example in the multiplication function we know that the first components of the Matrix-vectors need to be multiplied by the vector. The memory-layout is not important
