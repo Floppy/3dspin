@@ -49,7 +49,7 @@ def toScreenCoords(pv):
 	return [px, py]
 
 def createCameraMatrix(x,y,z):
-    camera_transform = matrix.Matrix(4, 4)
+    camera_transform = matrix.Matrix()
     camera_transform.m[0][3] = x
     camera_transform.m[1][3] = y
     camera_transform.m[2][3] = z
@@ -57,7 +57,7 @@ def createCameraMatrix(x,y,z):
 
 def createProjectionMatrix(horizontal_fov, zfar, znear):
     s = 1/(math.tan(math.radians(horizontal_fov/2)))
-    proj = matrix.Matrix(4, 4)
+    proj = matrix.Matrix()
     proj.m[0][0] = s * (240/320) # inverse aspect ratio
     proj.m[1][1] = s
     proj.m[2][2] = -zfar/(zfar-znear)
@@ -66,17 +66,17 @@ def createProjectionMatrix(horizontal_fov, zfar, znear):
     return proj
 
 def createRotationMatrix(x_rotation, y_rotation, z_rotation):
-    rot_x = matrix.Matrix(4,4)
+    rot_x = matrix.Matrix()
     rot_x.m[1][1] = rot_x.m[2][2] = math.cos(x_rotation)
     rot_x.m[2][1] = math.sin(x_rotation)
     rot_x.m[1][2] = -rot_x.m[2][1]
 
-    rot_y = matrix.Matrix(4,4)
+    rot_y = matrix.Matrix()
     rot_y.m[0][0] = rot_y.m[2][2] = math.cos(y_rotation)
     rot_y.m[0][2] = math.sin(y_rotation)
     rot_y.m[2][0] = -rot_y.m[0][2]
     
-    rot_z = matrix.Matrix(4,4)
+    rot_z = matrix.Matrix()
     rot_z.m[0][0] = rot_z.m[1][1] = math.cos(z_rotation)
     rot_z.m[1][0] = math.sin(z_rotation)
     rot_z.m[0][1] = -rot_z.m[1][0]
